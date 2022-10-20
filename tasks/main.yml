@@ -2,15 +2,10 @@
 - name: Install base packages
   become: true
   apt:
-    name:
-      - htop
-      - neofetch
-      - vifm
-      - vim
-      - git
-      - zsh
-    #update_cache: yes
+    name: {{ item.name }}
+    # update_cache: yes
     state: present
+    loop: package_list
 
 - name: Remove packages
   become: true
