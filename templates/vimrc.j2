@@ -1,0 +1,148 @@
+" Install vim-plug
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+
+" Specify a directory for plugins
+" - Avoid using standard Vim directory names like 'plugin'
+call plug#begin('~/.vim/plugged')
+
+    " Make sure you use single quotes
+    Plug 'junegunn/vim-plug'
+    Plug 'tpope/vim-commentary'
+    Plug 'pearofducks/ansible-vim', { 'do': './UltiSnips/generate.sh' }
+
+    " codedark color scheme
+    Plug 'tomasiser/vim-code-dark'
+
+    " Initialize plugin system
+call plug#end()
+
+syntax on
+
+" Basic settings
+set clipboard=unnamedplus
+set nowrap
+set smartindent
+" set nu
+set number relativenumber
+set ignorecase                  " case insensitive searching
+set incsearch                   " set incremental search, like modern browsers
+set wildmode=longest,list,full  " Vim command tab completion show lists
+set splitbelow splitright
+set cursorline                  " Show cursorline
+"set cursorcolumn               " Show cursorcolumn
+set termguicolors
+colorscheme codedark
+highlight Cursorline ctermbg=Yellow cterm=bold guibg=#2b2b2b
+highlight CursorColumn  ctermbg=Yellow cterm=bold guibg=#2b2b2b
+
+" Tab settings
+set tabstop=4 softtabstop=4
+set shiftwidth=4
+set expandtab
+" Fix auto-indentation for YAML files
+augroup yaml_fix
+    autocmd!
+    autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab indentkeys-=0# indentkeys-=<:>
+augroup END
+
+" Key remapping
+let mapleader = " "
+nnoremap <leader>o :Vex<CR>
+nnoremap <leader><Left> :wincmd h<CR>
+nnoremap <leader><Right> :wincmd l<CR>
+nnoremap <leader><Up> :wincmd k<CR>
+nnoremap <leader><Down> :wincmd j<CR>
+nnoremap <leader>t :bel vert term<CR>
+" File completion rempa to <Ctrl>+f
+inoremap <C-f> <C-x><C-f>
+" Enable spell chacking, s for spell check
+map <leader>s :setlocal spell! spelllang=en_us<CR>
+" Split opening
+nnoremap <leader>h :split<CR>
+nnoremap <leader>v :vsplit<CR>
+" Alias search and replace to S
+nnoremap S :%s//gc<Left><Left><Left>
+
+
+
+" Status line
+" default: set statusline=%f\ %h%w%m%r\ %=%(%l,%c%V\ %=\ %P%)
+
+" Status Line Custom
+ let g:currentmode={
+     \ 'n'  : 'Normal',
+     \ 'no' : 'Normal·Operator Pending',
+     \ 'v'  : 'Visual',
+     \ 'V'  : 'V·Line',
+     \ '^V' : 'V·Block',
+     \ 's'  : 'Select',
+     \ 'S'  : 'S·Line',
+     \ '^S' : 'S·Block',
+     \ 'i'  : 'Insert',
+     \ 'R'  : 'Replace',
+     \ 'Rv' : 'V·Replace',
+     \ 'c'  : 'Command',
+     \ 'cv' : 'Vim Ex',
+     \ 'ce' : 'Ex',
+     \ 'r'  : 'Prompt',
+     \ 'rm' : 'More',
+     \ 'r?' : 'Confirm',
+     \ '!'  : 'Shell',
+     \ 't'  : 'Terminal'
+     \}
+
+" Function return current mode
+" abort -> function will abort soon as error detected
+function! ModeCurrent() abort
+    let l:modecurrent = mode()
+    " use get() -> fails safely, since ^V doesn't seem to register
+    " 3rd arg is used when return of mode() == 0, which is case with ^V
+    " thus, ^V fails -> returns 0 -> replaced with 'V Block'
+    let l:modelist = toupper(get(g:currentmode, l:modecurrent, 'V·Block '))
+    let l:current_status_mode = l:modelist
+    return l:current_status_mode
+endfunction
+
+" Status-line
+set laststatus=2                                         " show the satus lie all the time
+set noshowmode
+set statusline=
+set statusline+=%0*\ %{ModeCurrent()}\                   " The current mode
+set statusline+=%1*\ %<%F%m%r%h%w\                       " File path, modified, readonly, helpfile, preview
+set statusline+=%3*│                                     " Separator
+set statusline+=%2*\ %Y\                                 " FileType
+set statusline+=%3*│                                     " Separator
+set statusline+=%2*\ %{''.(&fenc!=''?&fenc:&enc).''}     " Encoding
+set statusline+=\ (%{&ff})                               " FileFormat (dos/unix..)
+set statusline+=%=                                       " Right Side
+set statusline+=%0*\ col:\ %02v\                         " Colomn number
+set statusline+=%0*│                                     " Separator
+set statusline+=%0*\ ln:\ %02l/%L\ (%3p%%)\              " Line number / total lines, percentage of document
+
+" Change statusline collor in insert mode
+function! InsertStatuslineColor(mode)
+    if a:mode == 'i'
+        highlight statusline guibg=#edebb2 guifg=Black
+    elseif a:mode == 'r'
+        highlight statusline guibg=#b17fdb guifg=Black
+    else
+        highlight statusline guibg=DarkRed ctermfg=1 guifg=Black ctermbg=0
+    endif
+endfunction
+
+au InsertEnter * call InsertStatuslineColor(v:insertmode)
+au InsertChange * call InsertStatuslineColor(v:insertmode)
+au InsertLeave * highlight statusline guibg=#5b5b5b guifg=#D4D4D4
+" for ansible-vim set filetiype on playbooks
+autocmd BufNewFile,BufRead playbook*.yml set filetype=yaml.ansible
+
+" Default the statusline when entering vim
+highlight statusline guibg=#5b5b5b guifg=#D4D4D4
+
+let g:coc_filetype_map = {
+   \ 'yaml.ansible': 'ansible',
+   \ }
