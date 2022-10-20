@@ -2,18 +2,10 @@
 - name: Install base packages
   become: true
   apt:
-    name: {{ item.name }}
+    name: "{{ item.name }}"
     # update_cache: yes
     state: present
     loop: package_list
-
-- name: Remove packages
-  become: true
-  apt:
-    name:
-      - screenfetch
-      - glances
-    state: absent
 
 - name: Check if vifm theme exists
   stat:
