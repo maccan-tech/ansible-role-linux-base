@@ -1,39 +1,41 @@
 ---
 - name: Install base packages
   become: true
-  apt:
-    name: "{{ item.name }}"
+  ansible.builtin.apt:
+    name: "{{ package.name }}"
     # update_cache: yes
     state: present
-    loop: package_list
+  loop: package_list
+  loop_control:
+    loop_var: package
 
 - name: Check if vifm theme exists
-  stat:
+  ansible.builtin.stat:
     path: ~/.config/vifm/colors/solarized-dark.vifm
   register: stat_vifm_theme_result
 
 - name: Creates config directory for vifm
-  file:
+  ansible.builtin.file:
     path: ~/.config/vifm/colors/
     state: directory
     recurse: true
   when: not stat_vifm_theme_result.stat.exists
 
 - name: Download vifm theme
-  get_url:
+  ansible.builtin.get_url:
     url: https://raw.githubusercontent.com/vifm/vifm-colors/master/solarized-dark.vifm
     dest: ~/.config/vifm/colors/solarized-dark.vifm
 #  when: not stat_vifm_theme_result.stat.exists
 
 - name: create .vifmrc config file
-  template:
+  ansible.builtin.template:
     src: vifmrc.j2
     dest: ~/.config/vifm/vifmrc
     backup: true
     mode: 'u=rw,go=r'
 
 - name: create .vimrc config file
-  template:
+  ansible.builtin.template:
     src: vimrc.j2
     dest: ~/.vimrc
     backup: true
@@ -41,23 +43,23 @@
 
 # ZSH
 - name: Check if .zshrc exists
-  stat:
+  ansible.builtin.stat:
     path: ~/.zshrc
   register: stat_rc_result
 
 - name: Check if .oh-my-zsh exists
-  stat:
+  ansible.builtin.stat:
     path: ~/.oh-my-zsh
   register: stat_oh_my_zsh_result
 
 - name: Cloning oh-my-zsh
-  git:
+  ansible.builtin.git:
     repo=https://github.com/robbyrussell/oh-my-zsh
     dest=~/.oh-my-zsh
   when: not stat_oh_my_zsh_result.stat.exists
 
 - name: Check oh-my-zsh folder owner
-  file:
+  ansible.builtin.file:
     path: '~/.oh-my-zsh'
     state: directory
     owner: '{{ ansible_user }}'
@@ -65,33 +67,33 @@
     recurse: true
 
 - name: Cloning zsh-autosuggestions
-  git:
+  ansible.builtin.git:
     repo=https://github.com/zsh-users/zsh-autosuggestions
     dest=~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
-  #when: not stat_oh_my_zsh_result.stat.exists
+  # when: not stat_oh_my_zsh_result.stat.exists
 
 - name: Cloning zsh-syntax-highlighting
-  git:
+  ansible.builtin.git:
     repo=https://github.com/zsh-users/zsh-syntax-highlighting
     dest=~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
-  #when: not stat_oh_my_zsh_result.stat.exists
+  # when: not stat_oh_my_zsh_result.stat.exists
 
-- name: create zsh maccan theme
-  template:
+- name: Create zsh maccan theme
+  ansible.builtin.template:
     src: maccan.zsh-theme.j2
     dest: ~/.oh-my-zsh/custom/themes/maccan.zsh-theme
     backup: true
     mode: 'u=rw,go=r'
 
-- name: create .zshrc
-  template:
+- name: Create .zshrc
+  ansible.builtin.template:
     src: zshrc.j2
     dest: ~/.zshrc
     backup: true
     mode: 'u=rw,go=r'
 
-- name: set default shell for users
+- name: Set default shell for users
   become: true
-  user:
+  ansible.builtin.user:
     name: '{{ ansible_user }}'
     shell: /bin/zsh
