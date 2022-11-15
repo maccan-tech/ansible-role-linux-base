@@ -7,3 +7,12 @@ snapd_services:
   - snapd.service
   - snapd.socket
   - snapd.seeded.service
+  - snapd.apparmor.service
+  - snapd.autoimport.service
+  - snapd.core-fixup.service
+  - snapd.recovery-chooser-trigger.service
+  - snapd.seeded.service
+  - snapd.snap-repair.service
+  - snapd.snap-repair.timer
+  - snapd.system-shutdown.service
+  - snapd.failure.service
