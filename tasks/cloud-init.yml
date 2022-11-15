@@ -12,8 +12,8 @@
     - ansible_facts.services["snapd.service"].state == 'running'
     - ansible_distribution == "Ubuntu"
     - ansible_distribution_version >= "22.04"
-    - ansible_facts.services[service] is defined
-    - ansible_facts.services[service].status == 'enabled'
+    - server_services.services[service] is defined
+    - server_services.services[service].status == 'enabled'
 
 - name: 'Check if /etc/cloud/ exists'
   become: true

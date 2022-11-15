@@ -1,4 +1,17 @@
 ---
+- name: Populate service facts
+  ansible.builtin.service_facts:
+
+- name: Remove cloude-init
+  ansible.builtin.import_tasks: "cloud-init.yml"
+  vars:
+    server_services: "{{ ansible_facts }}"
+
+- name: Remove snapd
+  ansible.builtin.import_tasks: "snapd.yml"
+  vars:
+    server_services: "{{ ansible_facts }}"
+
 - name: Install base packages
   become: true
   ansible.builtin.apt:
@@ -8,15 +21,6 @@
   loop: "{{ package_list }}"
   loop_control:
     loop_var: package
-
-- name: Populate service facts
-  ansible.builtin.service_facts:
-
-- name: Remove cloude-init
-  ansible.builtin.import_tasks: "cloud-init.yml"
-
-- name: Remove snapd
-  ansible.builtin.import_tasks: "snapd.yml"
 
 - name: Check if vifm theme exists
   ansible.builtin.stat:
