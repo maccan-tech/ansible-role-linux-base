@@ -10,7 +10,7 @@
     loop_var: package
 
 - name: Remove snapd
-  ansible.builtin.import_tasks: "snapd.yaml"
+  ansible.builtin.import_tasks: "snapd.yml"
 
 - name: Check if vifm theme exists
   ansible.builtin.stat:
