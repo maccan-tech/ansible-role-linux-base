@@ -8,7 +8,10 @@
     name: "{{ item }}"
     state: absent
   loop: "{{ snap_packages }}"
-  when: ansible_facts.services["snapd.service"].state == 'running' 
+  when:
+    - ansible_facts.services["snapd.service"].state == 'running'
+    - ansible_distribution == "Ubuntu"
+    - ansible_distribution_version >= "22.04"
 
 - name: Shutdown snapd services, sockets and timers
   become: true
@@ -19,3 +22,6 @@
   failed_when: false
   loop:
     "{{ snapd_services }}"
+  when:
+    - ansible_distribution == "Ubuntu"
+    - ansible_distribution_version >= "22.04"
