@@ -13,7 +13,7 @@
 - name: Shutdown snapd services, sockets and timers
   become: true
   ansible.builtin.service:
-    name: "{{ item }}"
+    name: "{{ service }}"
     state: stopped
     enabled: false
   failed_when: false
