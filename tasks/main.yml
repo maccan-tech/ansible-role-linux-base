@@ -9,6 +9,12 @@
   loop_control:
     loop_var: package
 
+- name: Populate service facts
+  ansible.builtin.service_facts:
+
+- name: Remove cloude-init
+  ansible.builtin.import_tasks: "cloud-init.yml"
+
 - name: Remove snapd
   ansible.builtin.import_tasks: "snapd.yml"
 
