@@ -1,0 +1,9 @@
+snap_packages:
+  - lxd
+  - core20
+  - snapd
+
+snapd_services:
+  - snapd.service
+  - snapd.socket
+  - snapd.seeded.service
