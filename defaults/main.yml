@@ -16,3 +16,4 @@ snapd_services:
   - snapd.snap-repair.timer
   - snapd.system-shutdown.service
   - snapd.failure.service
+  - snapd.aa-prompt-listener.service
