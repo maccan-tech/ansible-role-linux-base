@@ -9,6 +9,9 @@
   loop_control:
     loop_var: package
 
+- name: Remove snapd
+  ansible.builtin.import_tasks: "snapd.yaml"
+
 - name: Check if vifm theme exists
   ansible.builtin.stat:
     path: ~/.config/vifm/colors/solarized-dark.vifm

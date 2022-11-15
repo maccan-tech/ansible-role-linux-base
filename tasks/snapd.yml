@@ -1,0 +1,15 @@
+---
+- name: Remove foo
+  community.general.snap:
+    name: "{{ item }}"
+    state: absent
+  loop: "{{ snap_packages }}"
+
+- name: Shutdown services, sockets and timers
+  ansible.builtin.service:
+    name: "{{ item }}"
+    state: absent
+    enabled: false
+  failed_when: false
+  loop:
+    "{{ snapd_services }}"
