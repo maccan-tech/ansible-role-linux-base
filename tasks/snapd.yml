@@ -1,11 +1,13 @@
 ---
-- name: Remove foo
+- name: Remove snap packages
+  become: true
   community.general.snap:
     name: "{{ item }}"
     state: absent
   loop: "{{ snap_packages }}"
 
-- name: Shutdown services, sockets and timers
+- name: Shutdown snapd services, sockets and timers
+  become: true
   ansible.builtin.service:
     name: "{{ item }}"
     state: absent
