@@ -40,14 +40,14 @@
     dest: ~/.config/vifm/colors/solarized-dark.vifm
 #  when: not stat_vifm_theme_result.stat.exists
 
-- name: create .vifmrc config file
+- name: Create .vifmrc config file
   ansible.builtin.template:
     src: vifmrc.j2
     dest: ~/.config/vifm/vifmrc
     backup: true
     mode: 'u=rw,go=r'
 
-- name: create .vimrc config file
+- name: Create .vimrc config file
   ansible.builtin.template:
     src: vimrc.j2
     dest: ~/.vimrc
