@@ -113,14 +113,14 @@ set noshowmode
 set statusline=
 set statusline+=%0*\ %{ModeCurrent()}\                   " The current mode
 set statusline+=%1*\ %<%F%m%r%h%w\                       " File path, modified, readonly, helpfile, preview
-set statusline+=%3*│                                     " Separator
+set statusline+=%3*|                                     " Separator
 set statusline+=%2*\ %Y\                                 " FileType
-set statusline+=%3*│                                     " Separator
+set statusline+=%3*|                                     " Separator
 set statusline+=%2*\ %{''.(&fenc!=''?&fenc:&enc).''}     " Encoding
 set statusline+=\ (%{&ff})                               " FileFormat (dos/unix..)
 set statusline+=%=                                       " Right Side
 set statusline+=%0*\ col:\ %02v\                         " Colomn number
-set statusline+=%0*│                                     " Separator
+set statusline+=%0*|                                     " Separator
 set statusline+=%0*\ ln:\ %02l/%L\ (%3p%%)\              " Line number / total lines, percentage of document
 
 " Change statusline collor in insert mode
