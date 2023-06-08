@@ -4,6 +4,13 @@ snap_packages:
   - core20
   - snapd
 
+package_list:
+  - name: vim
+  
+package_list_redhat:
+  - name: vim
+    disable_gpg_check: false
+  
 snapd_services:
   - snapd.service
   - snapd.socket
