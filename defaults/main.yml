@@ -13,6 +13,8 @@ package_list_redhat:
   - name: nvim
     disable_gpg_check: false
   
+pip_package_list: []
+
 snapd_services:
   - snapd.service
   - snapd.socket
