@@ -30,6 +30,7 @@
   block:
     - name: Set a hostname specifying strategy
       become: true
+      when: set_hostname
       ansible.builtin.hostname:
         name: '{{ inventory_hostname}}'
         use: systemd

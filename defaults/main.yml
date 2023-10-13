@@ -1,4 +1,6 @@
 ---
+set_hostname: false
+
 snap_packages:
   - lxd
   - core20
