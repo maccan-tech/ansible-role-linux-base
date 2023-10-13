@@ -5,10 +5,10 @@ snap_packages:
   - snapd
 
 package_list:
-  - name: vim
+  - name: nvim
   
 package_list_redhat:
-  - name: vim
+  - name: nvim
     disable_gpg_check: false
   
 snapd_services:

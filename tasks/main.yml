@@ -38,7 +38,6 @@
       become: true
       ansible.builtin.dnf:
         name: "{{ package.name }}"
-        disable_gpg_check: "{{ package.disable_gpg_check }}"
         state: present
       loop: "{{ package_list_redhat }}"
       loop_control:
@@ -149,6 +148,14 @@
     backup: true
     mode: 'u=rw,go=r'
   when: ansible_os_family == 'RedHat'
+
+- name: Create starship.toml
+  ansible.builtin.template:
+    src: starship.toml
+    dest: ~/.config/starship.toml
+    backup: true
+    mode: 'u=rw,go=r'
+  when: ansible_os_family == 'Debian'
 
 - name: Set default shell for users
   become: true

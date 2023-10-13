@@ -9,20 +9,7 @@ export ZSH="/home/{{ ansible_user }}/.oh-my-zsh"
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
 # ZSH_THEME="robbyrussell"
-ZSH_THEME="maccan"
-
-# Set list of themes to pick from when loading at random
-# Setting this variable when ZSH_THEME=random will cause zsh to load
-# a theme from this variable instead of looking in $ZSH/themes/
-# If set to an empty array, this variable will have no effect.
-# ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" )
-
-# Uncomment the following line to use case-sensitive completion.
-# CASE_SENSITIVE="true"
-
-# Uncomment the following line to use hyphen-insensitive completion.
-# Case-sensitive completion must be off. _ and - will be interchangeable.
-# HYPHEN_INSENSITIVE="true"
+# ZSH_THEME="maccan"
 
 # Uncomment the following line to disable bi-weekly auto-update checks.
 # DISABLE_AUTO_UPDATE="true"
@@ -30,48 +17,16 @@ ZSH_THEME="maccan"
 # Uncomment the following line to automatically update without prompting.
 # DISABLE_UPDATE_PROMPT="true"
 
-# Uncomment the following line to change how often to auto-update (in days).
-# export UPDATE_ZSH_DAYS=13
-
-# Uncomment the following line if pasting URLs and other text is messed up.
-# DISABLE_MAGIC_FUNCTIONS=true
-
-# Uncomment the following line to disable colors in ls.
-# DISABLE_LS_COLORS="true"
-
-# Uncomment the following line to disable auto-setting terminal title.
-# DISABLE_AUTO_TITLE="true"
-
 # Uncomment the following line to enable command auto-correction.
 # ENABLE_CORRECTION="true"
 
 # Uncomment the following line to display red dots whilst waiting for completion.
 COMPLETION_WAITING_DOTS="true"
 
-# Uncomment the following line if you want to disable marking untracked files
-# under VCS as dirty. This makes repository status check for large repositories
-# much, much faster.
-# DISABLE_UNTRACKED_FILES_DIRTY="true"
-
-# Uncomment the following line if you want to change the command execution time
-# stamp shown in the history command output.
-# You can set one of the optional three formats:
-# "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
-# or set a custom format using the strftime function format specifications,
-# see 'man strftime' for details.
-# HIST_STAMPS="mm/dd/yyyy"
-
-# Would you like to use another custom folder than $ZSH/custom?
-# ZSH_CUSTOM=/path/to/new-custom-folder
-
 # Which plugins would you like to load?
-# Standard plugins can be found in $ZSH/plugins/
-# Custom plugins may be added to $ZSH_CUSTOM/plugins/
-# Example format: plugins=(rails git textmate ruby lighthouse)
-# Add wisely, as too many plugins slow down shell startup.
 plugins=(
     git
-#    ssh-agent
+    ssh-agent
     docker-compose
     docker
     zsh-autosuggestions
@@ -80,39 +35,54 @@ plugins=(
 
 source $ZSH/oh-my-zsh.sh
 
+#######################################################
 # User configuration
-
-# export MANPATH="/usr/local/man:$MANPATH"
+#######################################################
 
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8
 
 # Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='mvim'
-# fi
+if [[ -n $SSH_CONNECTION ]]; then
+  export EDITOR='nvim'
+else
+  export EDITOR='nvim'
+fi
 
-# Compilation flags
-# export ARCHFLAGS="-arch x86_64"
+#######################################################
+# GENERAL ALIAS'S
+#######################################################
 
-# Set personal aliases, overriding those provided by oh-my-zsh libs,
-# plugins, and themes. Aliases can be placed here, though oh-my-zsh
-# users are encouraged to define aliases within the ZSH_CUSTOM folder.
-# For a full list of active aliases, run `alias`.
-#
-# Example aliases
-# alias zshconfig="mate ~/.zshrc"
+# Alias's to modified commands
+alias rm='trash -v'
+alias mkdir='mkdir -p'
+alias ps='ps auxf'
+alias cls='clear'
+alias apt-get='sudo apt-get'
+alias vi="nvim"
+alias vim="nvim"
+
+# Change directory aliases
+alias cd..='cd ..'
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias .....='cd ../../../..'
+
+# Remove a directory and all files
+# alias rmd='/bin/rm  --recursive --force --verbose '
+
+# Disk space
+alias folders='du -h --max-depth=1'
+alias treed='tree -CAFd'
+
+# Set personal aliases
 alias zshconfig="vi ~/.zshrc"
 alias vimconfig="vi ~/.vimrc"
 alias vifmconfig="vi ~/.config/vifm/vifmrc"
 alias vf="vifm ."
 alias notes="vim $HOME/Nextcloud/Sync/Notes/"
 alias fd="find . -iname $1"
-
-# Show neofetch
-if [ -f /usr/bin/neofetch ]; then neofetch; fi
 
 # Bind <ctrl>o to open vifm
 bindkey -s '^o' 'vifm .\n'
@@ -121,9 +91,76 @@ bindkey -s '^e' 'vifm .\n'
 #Bind <ctrl>n to open ~/bin/notetaker
 bindkey -s '^n' '~/bin/notetaker\n'
 
+# Searches for text in all files in the current folder
+ftext ()
+{
+	# -i case-insensitive
+	# -I ignore binary files
+	# -H causes filename to be printed
+	# -r recursive search
+	# -n causes line number to be printed
+	# optional: -F treat search term as a literal, not a regular expression
+	# optional: -l only print filenames and not the matching lines ex. grep -irl "$1" *
+	grep -iIHrn --color=always "$1" . | less -r
+}
+
+# Copy file with a progress bar
+cpp()
+{
+	set -e
+	strace -q -ewrite cp -- "${1}" "${2}" 2>&1 \
+	| awk '{
+	count += $NF
+	if (count % 10 == 0) {
+		percent = count / total_size * 100
+		printf "%3d%% [", percent
+		for (i=0;i<=percent;i++)
+			printf "="
+			printf ">"
+			for (i=percent;i<100;i++)
+				printf " "
+				printf "]\r"
+			}
+		}
+	END { print "" }' total_size="$(stat -c '%s' "${1}")" count=0
+}
+
+# Show current network information
+# missin macassress
+netinfo ()
+{
+	echo "--------------- Network Information ---------------"
+  echo ""
+  printf "%-20s %-15s %s\n" "Interface" "IP" "Mask"
+  printf "%-20s %-15s %s\n" "-----" "-----" "-----"
+  /sbin/ifconfig | awk '/flags=/ || /inet /' | awk '{key=$0; getline; print key $0;}' | awk /'flags=/ {printf "%-20s %-15s %s\n",  $1,$6,$8}'
+  echo ""
+	echo "---------------------------------------------------"
+}
+
+# GitHub Additions
+gcom() {
+	git add .
+	git commit -m "$1"
+	}
+lazyg() {
+	git add .
+	git commit -m "$1"
+	git push
+}
+
+# Show neofetch
+if [ -f /usr/bin/neofetch ]; then neofetch; fi
+
+
 # Auto load auto-completions
 autoload -U compinit; compinit
 
 # SSH auto completion with hosts
 zstyle ':completion:*:ssh:*' hosts
 
+export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
+
+# Load starship
+# Install Starship - curl -sS https://starship.rs/install.sh | sh
+eval "$(starship init zsh)"
