@@ -9,6 +9,7 @@
   loop_control:
     loop_var: service
   when:
+    - ansible_facts.services["snapd.service"].state is defined
     - ansible_facts.services["snapd.service"].state == 'running'
     - ansible_distribution == "Ubuntu"
     - ansible_distribution_version >= "22.04"

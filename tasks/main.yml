@@ -61,6 +61,10 @@
       loop_control:
         loop_var: package
 
+- name: Set timezone to Stockholm
+  time:
+    timezone: 'Europe/Stockholm'
+
 - name: Check if vifm theme exists
   ansible.builtin.stat:
     path: ~/.config/vifm/colors/solarized-dark.vifm
@@ -166,14 +170,6 @@
     backup: true
     mode: 'u=rw,go=r'
   when: ansible_os_family == 'RedHat'
-
-- name: Create starship.toml
-  ansible.builtin.template:
-    src: starship.toml
-    dest: ~/.config/starship.toml
-    backup: true
-    mode: 'u=rw,go=r'
-  when: ansible_os_family == 'Debian' or ansible_os_family == 'RedHat'
 
 - name: Set default shell for users
   become: true

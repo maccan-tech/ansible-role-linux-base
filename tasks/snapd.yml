@@ -6,6 +6,7 @@
     state: absent
   loop: "{{ snap_packages }}"
   when:
+    - server_services.services["snapd.service"].state is defined
     - server_services.services["snapd.service"].state == 'running'
     - ansible_distribution == "Ubuntu"
     - ansible_distribution_version >= "22.04"
